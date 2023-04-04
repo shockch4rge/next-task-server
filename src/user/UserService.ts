@@ -8,5 +8,4 @@ export class UserService {
     public async getAll() {
         return User.find();
     }
-	
 }
