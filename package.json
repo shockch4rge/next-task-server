@@ -1,0 +1,27 @@
+{
+  "name": "next-library-server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "koa": "^2.14.1",
+    "pg": "^8.10.0",
+    "tslib": "^2.5.0",
+    "tsoa": "^5.1.1",
+    "typeorm": "^0.3.12"
+  },
+  "devDependencies": {
+    "@total-typescript/ts-reset": "^0.4.2",
+    "@types/koa": "^2.13.6",
+    "@typescript-eslint/eslint-plugin": "^5.57.1",
+    "@typescript-eslint/parser": "^5.57.1",
+    "eslint": "^8.37.0",
+    "typescript": "^5.0.3"
+  }
+}
