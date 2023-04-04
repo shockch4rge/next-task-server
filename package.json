@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "build": "tsoa spec-and-routes && tsc",
-    "dev": "node build/src/app.js",
+    "dev": "tsoa spec-and-routes && ts-node src/app.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -33,6 +33,7 @@
     "@typescript-eslint/parser": "^5.57.1",
     "eslint": "^8.37.0",
     "ts-jest": "^29.1.0",
+    "ts-node": "^10.9.1",
     "typescript": "^5.0.3"
   }
 }
