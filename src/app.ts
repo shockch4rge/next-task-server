@@ -2,7 +2,7 @@ import Koa from "koa";
 
 import KoaRouter from "@koa/router";
 
-import { RegisterRoutes } from "../build/routes";
+import { RegisterRoutes } from "../routing/routes";
 import { db } from "./db";
 
 db.initialize()
@@ -13,7 +13,7 @@ db.initialize()
         const router = new KoaRouter();
 
         RegisterRoutes(router);
-        
+
         app.use(router.routes());
         app.use(router.allowedMethods());
 
