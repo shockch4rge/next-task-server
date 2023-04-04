@@ -1,16 +1,21 @@
 {
-  "name": "next-library-server",
+  "name": "next-task-server",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
+    "build": "tsoa spec-and-routes && tsc",
+    "dev": "node build/src/app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@koa/router": "^12.0.0",
+    "@tsoa/runtime": "^5.0.0",
     "@types/jest": "^29.5.0",
+    "@types/koa__router": "^12.0.0",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.0",
     "koa": "^2.14.1",
