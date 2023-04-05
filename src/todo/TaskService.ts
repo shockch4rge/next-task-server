@@ -3,7 +3,7 @@ import { Task } from "./Task";
 
 import type { TaskCreate, TaskDelete, TaskUpdate } from "./Task";
 
-export class TodoService {
+export class TaskService {
     async get(id: Task["id"]) {
         return Task.findOneBy({ id });
     }

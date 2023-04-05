@@ -1,11 +1,11 @@
 import { Body, Controller, Delete, Get, Path, Post, Put, Route } from "tsoa";
 
 import { TaskCreate, TaskDelete, TaskGet } from "./Task";
-import { TodoService as TaskService } from "./TaskService";
+import { TaskService } from "./TaskService";
 
 import type { TaskUpdate } from "./Task";
 
-@Route("todos")
+@Route("tasks")
 export class TaskController extends Controller {
     readonly taskService: TaskService;
 
