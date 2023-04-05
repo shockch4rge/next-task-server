@@ -29,13 +29,12 @@
         "useUnknownInCatchVariables": true,
         "experimentalDecorators": true,
         "emitDecoratorMetadata": true,
-        "outDir": "build",
+        "outDir": "dist",
     },
     "exclude": [
         "**/*.test.*",
         "**/*.spec.*",
         "dist",
-        "build",
         "assets"
     ]
 }
