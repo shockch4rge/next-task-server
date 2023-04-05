@@ -8,16 +8,16 @@ export class TaskService {
         return Task.findOneBy({ id });
     }
 
-    async create(todo: TaskCreate) {
+    async create(task: TaskCreate) {
         return Task.create({
-            ...todo,
+            ...task,
             id: uuid(),
             status: "open",
         });
     }
 
-    async update(todo: TaskUpdate) {
-        return Task.update(todo.id, todo);
+    async update(task: TaskUpdate) {
+        return Task.update(task.id, task);
     }
 
     async delete(id: TaskDelete) {

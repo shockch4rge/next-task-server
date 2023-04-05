@@ -20,15 +20,15 @@ export class TaskController extends Controller {
     }
 
     @Post()
-    public async create(@Body() todo: TaskCreate) {
-        return this.taskService.create(todo);
+    public async create(@Body() task: TaskCreate) {
+        return this.taskService.create(task);
     }
 
     @Put(`{id}`)
-    public async update(@Path() id: TaskUpdate["id"], @Body() todo: Omit<TaskUpdate, "id">) {
+    public async update(@Path() id: TaskUpdate["id"], @Body() task: Omit<TaskUpdate, "id">) {
         return this.taskService.update({
             id,
-            ...todo,
+            ...task,
         });
     }
 
