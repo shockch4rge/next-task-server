@@ -8,8 +8,6 @@ import bodyParser from "koa-bodyparser";
 
 db.initialize()
     .then(() => {
-        console.log("Database connection established");
-
         const app = new Koa();
         const router = new KoaRouter();
         
@@ -19,6 +17,6 @@ db.initialize()
         app.use(router.routes());
         app.use(router.allowedMethods());
 
-        app.listen(3000, () => console.log("Server is running on http://localhost:3000"));
+        app.listen(4000, () => console.log("Server/DB running"));
     })
     .catch((err: Error) => console.error(err));
