@@ -10,11 +10,12 @@ export class Board extends BaseEntity {
 
 	@OneToMany(()=> Task, task => task.board) tasks!: Task[];
 
-	@ManyToMany(() => User)
-	@JoinTable() users!: User[];
+	@ManyToMany(() => User, user => user.boards)
+	@JoinTable({ name: "board_users" }) users!: User[];
 }
 
 export type BoardGet = Board["id"];
-export type BoardCreate = Pick<Board, "description" | "title"> & { userId: User["id"] };
+export type BoardCreate = Pick<Board, "description" | "title"> & { userId: User["id"] } ;
+export type BoardAddUsers = Pick<Board, "id"> & { userIds: Array<User["id"]> };
 export type BoardUpdate = Partial<Pick<Board, "description" | "title">> & Pick<Board, "id">;
 export type BoardDelete = Board["id"];

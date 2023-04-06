@@ -1,5 +1,7 @@
+import { In } from "typeorm";
+import { User } from "../user";
 import { uuid } from "../util/uuid";
-import type { BoardGet, BoardCreate, BoardUpdate, BoardDelete } from "./Board";
+import type { BoardGet, BoardCreate, BoardUpdate, BoardDelete, BoardAddUsers } from "./Board";
 import { Board } from "./Board";
 
 export class BoardService {
@@ -8,10 +10,19 @@ export class BoardService {
     }
 
     public async create(board: BoardCreate) {
-        return Board.insert({
-            ...board,
-            id: uuid(),
-        });
+        const user = await User.findOneBy({ id: board.userId });
+
+        if (!user) {
+            throw new Error("User not found");
+        }
+
+        const newBoard = new Board();
+        newBoard.id = uuid();
+        newBoard.title = board.title;
+        newBoard.description = board.description;
+        newBoard.users = [user];
+
+        return newBoard.save();
     }
 
     // public async update(board: BoardUpdate) {
