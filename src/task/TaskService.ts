@@ -13,11 +13,11 @@ export class TaskService {
 
     async create(task: TaskCreate) {
         console.log(task);
-        return Task.insert({
+        return Task.create({
             ...task,
             id: uuid(),
             status: "open",
-        });
+        }).save();
 			
     }
 
