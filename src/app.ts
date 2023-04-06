@@ -2,7 +2,7 @@ import Koa from "koa";
 
 import KoaRouter from "@koa/router";
 
-import { RegisterRoutes } from "../routing/routes";
+import { RegisterRoutes } from "./routing/routes";
 import { db } from "./db";
 import bodyParser from "koa-bodyparser";
 

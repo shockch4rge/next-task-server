@@ -1,7 +1,7 @@
 import { BaseEntity, Column, Entity, JoinColumn, ManyToOne, PrimaryColumn } from "typeorm";
 
 import { User } from "../user";
-import { Board } from "../board";
+// import { Board } from "../board";
 
 @Entity()
 export class Task extends BaseEntity {
