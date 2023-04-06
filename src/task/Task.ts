@@ -1,7 +1,7 @@
 import { BaseEntity, Column, Entity, JoinColumn, ManyToOne, PrimaryColumn } from "typeorm";
 
 import { User } from "../user";
-// import { Board } from "../board";
+import { Board } from "../board";
 
 @Entity()
 export class Task extends BaseEntity {
@@ -15,9 +15,9 @@ export class Task extends BaseEntity {
 
     @ManyToOne(() => User, user => user.tasks) author!: User;
 	@Column() authorId!: User["id"];
-	
-    // @ManyToOne(() => Board, board => board.tasks) board!: Board;
-    // @Column() boardId!: Board["id"];
+
+    @ManyToOne(() => Board, board => board.tasks) board!: Board;
+    @Column() boardId!: Board["id"];
 
 }
 
