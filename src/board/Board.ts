@@ -10,7 +10,9 @@ export class Board extends BaseEntity {
 
 	@OneToMany(()=> Task, task => task.board) tasks!: Task[];
 
-	@ManyToMany(() => User, user => user.boards)
+	@ManyToMany(() => User, user => user.boards, {
+	    cascade: true,
+	})
 	@JoinTable({ name: "board_users" }) users!: User[];
 }
 

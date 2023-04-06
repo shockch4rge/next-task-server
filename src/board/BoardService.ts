@@ -11,18 +11,38 @@ export class BoardService {
 
     public async create(board: BoardCreate) {
         const user = await User.findOneBy({ id: board.userId });
-
         if (!user) {
             throw new Error("User not found");
         }
 
-        const newBoard = new Board();
-        newBoard.id = uuid();
-        newBoard.title = board.title;
-        newBoard.description = board.description;
-        newBoard.users = [user];
+        return Board.create({
+            id: uuid(),
+            title: board.title,
+            description: board.description,
+            users: [user],
+        }).save();
+    }
 
-        return newBoard.save();
+    public async addUsers(request: BoardAddUsers) {
+        const board = await Board.findOne({ where: { id: request.id }, relations: {
+            users: true,
+        } });
+
+        console.log(board);
+
+        if (!board) {
+            throw new Error("Board not found");
+        }
+
+        const newUsers = await User.find({ where: { id: In(request.userIds) } });
+
+        if (!newUsers || newUsers.length !== request.userIds.length) {
+            throw new Error("Some users not found");
+        }
+
+        board.users = board.users.concat(newUsers);
+
+        return board.save();
     }
 
     // public async update(board: BoardUpdate) {
