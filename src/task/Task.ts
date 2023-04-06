@@ -1,6 +1,7 @@
 import { BaseEntity, Column, Entity, JoinColumn, ManyToOne, PrimaryColumn } from "typeorm";
 
 import { User } from "../user";
+// import { Board } from "../board";
 
 @Entity()
 export class Task extends BaseEntity {
@@ -13,6 +14,11 @@ export class Task extends BaseEntity {
     @Column() status!: "complete" | "open" | "pending";
 
     @ManyToOne(() => User, user => user.tasks) author!: User;
+	@Column() authorId!: User["id"];
+	
+    // @ManyToOne(() => Board, board => board.tasks) board!: Board;
+    // @Column() boardId!: Board["id"];
+
 }
 
 export type TaskGet = Task["id"];

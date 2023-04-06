@@ -1,7 +1,8 @@
 import { DataSource } from "typeorm";
 
+import { User } from "./user";
 import { Task } from "./task";
-import { User } from "./user/User";
+// import { Board } from "./board";
 
 export const db = new DataSource({
     type: "postgres",
