@@ -4,10 +4,19 @@
   "controllerPathGlobs": ["src/**/*Controller.ts"],
   "spec": {
     "outputDirectory": "src/routing",
+    "components": {
+      "securitySchemes": {
+        "jwt": {
+          "type": "http",
+          "scheme": "bearer"
+        }
+      }
+    },
     "specVersion": 3
   },
   "routes": {
     "routesDir": "src/routing",
-	  "middleware": "koa"
+	  "middleware": "koa",
+    "authenticationModule": "src/middleware/auth.ts"
   }
 }
