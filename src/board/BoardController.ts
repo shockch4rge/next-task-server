@@ -44,15 +44,35 @@ export class BoardController extends Controller {
 	        throw new Error("Some users not found");
 	    }
 
-	    board.users = board.users.concat(newUsers);
+	    return Board.merge(board, { users: newUsers }).save();
+
+	}
+
+  	@Delete(`{id}/user`)
+	public async removeUsers(@Path() id: BoardAddUsers["id"], @Body() userIds: BoardAddUsers["userIds"]) {
+	    const board = await Board.findOne({ where: { id }, relations: {
+	        users: true,
+	    } });
+
+	    if (!board) {
+	        throw new Error("Board not found");
+	    } 
+
+	    const removedUsers = await User.find({ where: { id: In(userIds) } });
+
+	    if (!removedUsers || removedUsers.length !== userIds.length) {
+	        throw new Error("Some users not found");
+	    }
+
+	    board.users = board.users.filter(user => !userIds.includes(user.id));
 
 	    return board.save();
 	}
 
     @Put(`{id}`)
-	public async update(@Path() id: BoardUpdate["id"], @Body() board: Omit<BoardUpdate, "id">) {
+  	public async update(@Path() id: BoardUpdate["id"], @Body() board: Omit<BoardUpdate, "id">) {
 	    return Board.update(id, board);
-	}
+  	}
 
     @Delete(`{id}`)
     public async delete(@Path() id: BoardDelete) {
