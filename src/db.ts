@@ -2,7 +2,7 @@ import { DataSource } from "typeorm";
 
 import { User } from "./user";
 import { Task } from "./task";
-// import { Board } from "./board";
+import { Board } from "./board";
 
 export const db = new DataSource({
     type: "postgres",
@@ -11,7 +11,7 @@ export const db = new DataSource({
     username: "postgres",
     password: "admin",
     database: "next-task",
-    entities: [User, Task],
+    entities: [User, Task, Board],
     synchronize: true,
     logging: false,
 });
