@@ -5,8 +5,8 @@ import bodyParser from "koa-bodyparser";
 
 import KoaRouter from "@koa/router";
 
-import { db } from "./db";
 import { RegisterRoutes } from "./routing/routes";
+import { db } from "./db";
 
 db.initialize()
     .then(() => {

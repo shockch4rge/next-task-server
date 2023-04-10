@@ -1,7 +1,8 @@
-import { BaseEntity, Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { BaseEntity, Column, Entity, ManyToMany, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { instanceToPlain } from "class-transformer";
 
 import { Task } from "../task";
+import { Board } from "../board";
 
 @Entity()
 export class User extends BaseEntity {
@@ -18,11 +19,10 @@ export class User extends BaseEntity {
     readonly password!: string;
 
     @OneToMany(() => Task, task => task.author)
-    readonly tasks!: Task[];
+    public tasks!: Task[];
 
-    // TODO: ManyToMany => Boards
-    // @ManyToMany(() => Board, board.owner)
-    // readonly boards!: Board[];
+    @ManyToMany(() => Board, board => board.users)
+    public boards!: Board[];
 }
 
 export type UserLogin = Pick<User, "email" | "password">;
