@@ -1,6 +1,6 @@
 import { Body, Controller, Delete, Get, Path, Post, Put, Request, Route } from "tsoa";
-import type { BoardAddUsers, BoardUpdate } from "./Board";
-import { Board } from "./Board";
+import type { BoardAddUsers } from "./Board";
+import { Board, BoardUpdate } from "./Board";
 import { BoardCreate, BoardGet, BoardDelete } from "./Board";
 import * as koa from "koa";
 import { User } from "../user";
@@ -70,10 +70,10 @@ export class BoardController extends Controller {
 	}
 
     @Put(`{id}`)
-  	public async update(@Path() id: BoardUpdate["id"], @Body() board: Omit<BoardUpdate, "id">) {
-	    return Board.update(id, board);
+  	public async update(@Path() id: Board["id"], @Body() board: BoardUpdate) {
+	    return Board.save({ id, ...board });
   	}
-
+	
     @Delete(`{id}`)
     public async delete(@Path() id: BoardDelete) {
         return Board.delete(id);

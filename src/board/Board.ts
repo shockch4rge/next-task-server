@@ -19,5 +19,5 @@ export class Board extends BaseEntity {
 export type BoardGet = Board["id"];
 export type BoardCreate = Pick<Board, "description" | "title"> & { userId: User["id"] } ;
 export type BoardAddUsers = Pick<Board, "id"> & { userIds: Array<User["id"]> };
-export type BoardUpdate = Partial<Pick<Board, "description" | "title">> & Pick<Board, "id">;
+export type BoardUpdate = Partial<Pick<Board, "description" | "title">>;
 export type BoardDelete = Board["id"];
