@@ -17,16 +17,20 @@ export class Task extends BaseEntity {
     @Column()
     public status!: "complete" | "open" | "pending";
 
+    @ManyToOne(() => User, user => user.tasks)
+    public author!: User;
 
-    @ManyToOne(() => User, user => user.tasks) author!: User;
-	@Column("uuid") authorId!: User["id"];
+    @Column("uuid")
+    public authorId!: User["id"];
 
-    @ManyToOne(() => Board, board => board.tasks) board!: Board;
-    @Column("uuid") boardId!: Board["id"];
+    @ManyToOne(() => Board, board => board.tasks)
+    public board!: Board;
 
+    @Column("uuid")
+    public boardId!: Board["id"];
 }
 
 export type TaskGet = Task["id"];
-export type TaskCreate = Pick<Task, "description" | "title"> & { authorId: User["id"] } & { boardId: string };
+export type TaskCreate = Pick<Task, "description" | "title"> & { boardId: Board["id"] };
 export type TaskUpdate = Partial<Pick<Task, "description" | "status" | "title">>;
 export type TaskDelete = Task["id"];
