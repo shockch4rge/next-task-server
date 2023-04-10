@@ -1,41 +1,100 @@
-import { Body, Controller, Delete, Get, Path, Post, Put, Route, SuccessResponse } from "tsoa";
+import { tri } from "try-v2";
+import {
+    Body, Controller, Delete, Example, Get, Path, Post, Put, Response, Route, Security,
+    SuccessResponse
+} from "tsoa";
+import * as yup from "Yup";
 
-import { TaskCreate, TaskDelete, TaskGet } from "./Task";
-import { TaskService } from "./TaskService";
+import { Task, TaskCreate, TaskDelete, TaskGet } from "./Task";
 
 import type { TaskUpdate } from "./Task";
-
-@Route("tasks")
+@Route("/tasks")
 export class TaskController extends Controller {
-    readonly taskService: TaskService;
-
-    constructor() {
-        super();
-        this.taskService = new TaskService();
-    }
-
-    @Get(`{id}`)
+    @SuccessResponse(200, "OK")
+    @Response<string>(404, "Task not found")
+    @Security("jwt")
+    @Get(`/{id}`)
     public async get(@Path() id: TaskGet) {
-        return this.taskService.get(id);
+        const task = await Task.findOneBy({ id });
+
+        if (!task) {
+            this.setStatus(404);
+            return "Task not found";
+        }
+
+        return task;
     }
 
-	@SuccessResponse("201")
+    @Example<TaskCreate>({
+        title: "Task 1",
+        description: "This is a task description",
+        authorId: "user1",
+        boardId: "board1",
+    })
+    @SuccessResponse(200, "OK")
+    @Response<yup.ValidationError>(422)
+    @Security("jwt")
     @Post()
-    public async create(@Body() request: TaskCreate): Promise<any> {
-        console.log(request);
-        return this.taskService.create(request);
+    public async create(@Body() body: TaskCreate) {
+        const [validationError, task] = await tri(() => {
+            const schema = yup.object()
+                .shape({
+                    title: yup.string().required(),
+                    description: yup.string().required(),
+                    authorId: yup.string().required(),
+                    boardId: yup.string().required(),
+                });
+
+            return schema.validate(body);
+        });
+
+        if (validationError) {
+            this.setStatus(422);
+            return validationError.message;
+        }
+
+        return Task.create({ ...task, status: "open" }).save();
     }
 
-    @Put(`{id}`)
-	public async update(@Path() id: TaskUpdate["id"], @Body() task: Omit<TaskUpdate, "id">) {
-	    return this.taskService.update({
-	        id,
-	        ...task,
-	    });
-	}
+    @SuccessResponse(200, "OK")
+    @Response<yup.ValidationError>(422)
+    @Security("jwt")
+    @Put(`/{id}`)
+    public async update(@Path() id: TaskUpdate["id"], @Body() body: Omit<TaskUpdate, "id">) {
+        const [validationError, task] = await tri(() => {
+            const schema = yup
+                .object<TaskUpdate>()
+                .shape({
+                    title: yup.string().optional(),
+                    description: yup.string().optional(),
+                    status: yup
+                        .string<NonNullable<TaskUpdate["status"]>>()
+                        .optional(),
+                });
 
-    @Delete(`{id}`)
+            return schema.validate(body);
+        });
+
+        if (validationError) {
+            this.setStatus(422);
+            return validationError.message;
+        }
+
+        return Task.update(id, task);
+    }
+
+    @SuccessResponse(200, "OK")
+    @Response<string>(400, "Task not found")
+    @Security("jwt")
+    @Delete(`/{id}`)
     public async delete(@Path() id: TaskDelete) {
-        return this.taskService.delete(id);
+        const task = await Task.findOneBy({ id });
+
+        if (!task) {
+            this.setStatus(404);
+            return "Task not found";
+        }
+
+        return Task.remove([task]);
     }
 }
