@@ -5,6 +5,7 @@ import { BoardCreate, BoardGet, BoardDelete } from "./Board";
 import * as koa from "koa";
 import { User } from "../user";
 import { In } from "typeorm";
+import { tri } from "try-v2";
 
 @Route("boards")
 export class BoardController extends Controller {
@@ -76,7 +77,14 @@ export class BoardController extends Controller {
 	
     @Delete(`{id}`)
     public async delete(@Path() id: BoardDelete) {
-        return Board.delete(id);
+        const board = await Board.findOneBy({ id });
+
+        if (!board) {
+            this.setStatus(404);
+            return `No board found with id ${id} `;
+        }
+
+        return board.remove();
     }
 	
 }
