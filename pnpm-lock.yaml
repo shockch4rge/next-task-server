@@ -28,6 +28,9 @@ dependencies:
   pg:
     specifier: ^8.10.0
     version: 8.10.0
+  try-v2:
+    specifier: ^1.0.1
+    version: 1.0.1
   tslib:
     specifier: ^2.5.0
     version: 2.5.0
@@ -37,9 +40,6 @@ dependencies:
   typeorm:
     specifier: ^0.3.12
     version: 0.3.12(pg@8.10.0)(ts-node@10.9.1)
-  uuid:
-    specifier: ^9.0.0
-    version: 9.0.0
   yup:
     specifier: ^1.0.2
     version: 1.0.2
@@ -66,9 +66,6 @@ devDependencies:
   '@types/node':
     specifier: ^18.15.11
     version: 18.15.11
-  '@types/uuid':
-    specifier: ^9.0.1
-    version: 9.0.1
   '@typescript-eslint/eslint-plugin':
     specifier: ^5.57.1
     version: 5.57.1(@typescript-eslint/parser@5.57.1)(eslint@8.37.0)(typescript@5.0.3)
@@ -81,9 +78,6 @@ devDependencies:
   nodemon:
     specifier: ^2.0.22
     version: 2.0.22
-  try-v2:
-    specifier: ^1.0.1
-    version: 1.0.1
   ts-jest:
     specifier: ^29.1.0
     version: 29.1.0(@babel/core@7.21.4)(jest@29.5.0)(typescript@5.0.3)
@@ -1079,10 +1073,6 @@ packages:
 
   /@types/stack-utils@2.0.1:
     resolution: {integrity: sha512-Hl219/BT5fLAaz6NDkSuhzasy49dwQS/DSdu4MdggFB8zcXv7vflBI3xp7FEmkmdDkBUI2bPUNeMttp2knYdxw==}
-    dev: true
-
-  /@types/uuid@9.0.1:
-    resolution: {integrity: sha512-rFT3ak0/2trgvp4yYZo5iKFEPsET7vKydKF+VRCxlQ9bpheehyAJH89dAkaLEq/j/RZXJIqcgsmPJKUP1Z28HA==}
     dev: true
 
   /@types/validator@13.7.14:
@@ -4378,7 +4368,7 @@ packages:
 
   /try-v2@1.0.1:
     resolution: {integrity: sha512-Z6ennthvDLai/T0fNRw1Y69tMXqV1Udp9HWItd4fKIneTziF1Sq+XfxIh2xQCiVJzt9i9rp6CUlLCdAMi8bR/g==}
-    dev: true
+    dev: false
 
   /ts-jest@29.1.0(@babel/core@7.21.4)(jest@29.5.0)(typescript@5.0.3):
     resolution: {integrity: sha512-ZhNr7Z4PcYa+JjMl62ir+zPiNJfXJN6E8hSLnaUKhOgqcn8vb3e537cpkd0FuAfRK3sR1LSqM1MOhliXNgOFPA==}
