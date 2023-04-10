@@ -19,7 +19,7 @@ export class Task extends BaseEntity {
     public status!: "complete" | "open" | "pending";
 
     @ManyToOne(() => User, user => user.tasks) author!: User;
-    @Column() 
+    @Column("uuid") 
     public authorId!: User["id"];
 
     // @ManyToOne(() => Board, board => board.tasks) board!: Board;
