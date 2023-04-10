@@ -18,7 +18,9 @@ export class Task extends BaseEntity {
     @Column()
     public status!: "complete" | "open" | "pending";
 
-    @ManyToOne(() => User, user => user.tasks) author!: User;
+    @ManyToOne(() => User, user => user.tasks) 
+    public author!: User;
+    
     @Column("uuid") 
     public authorId!: User["id"];
 
