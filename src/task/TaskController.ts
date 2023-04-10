@@ -28,7 +28,6 @@ export class TaskController extends Controller {
     @Example<TaskCreate>({
         title: "Task 1",
         description: "This is a task description",
-        authorId: "user1",
         boardId: "board1",
     })
     @SuccessResponse(200, "OK")
@@ -41,10 +40,9 @@ export class TaskController extends Controller {
                 .shape({
                     title: yup.string().required(),
                     description: yup.string().required(),
-                    authorId: yup.string().required(),
                     boardId: yup.string().required(),
                 });
-                
+
             return schema.validate(body);
         });
 

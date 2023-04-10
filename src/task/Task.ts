@@ -27,6 +27,6 @@ export class Task extends BaseEntity {
 }
 
 export type TaskGet = Task["id"];
-export type TaskCreate = Pick<Task, "description" | "title"> & { authorId: User["id"] } & { boardId: string };
+export type TaskCreate = Pick<Task, "description" | "title"> & { boardId: Board["id"] };
 export type TaskUpdate = Partial<Pick<Task, "description" | "status" | "title">>;
 export type TaskDelete = Task["id"];
