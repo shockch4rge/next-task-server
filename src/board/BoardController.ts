@@ -1,11 +1,8 @@
-import { Body, Controller, Delete, Get, Path, Post, Put, Request, Route } from "tsoa";
-import type { BoardAddUsers } from "./Board";
-import { Board, BoardUpdate } from "./Board";
-import { BoardCreate, BoardGet, BoardDelete } from "./Board";
-import * as koa from "koa";
-import { User } from "../user";
+import { Body, Controller, Delete, Get, Path, Post, Put, Route } from "tsoa";
 import { In } from "typeorm";
-import { tri } from "try-v2";
+import { User } from "../user";
+import type { BoardAddUsers } from "./Board";
+import { Board, BoardCreate, BoardDelete, BoardGet, BoardUpdate } from "./Board";
 
 @Route("boards")
 export class BoardController extends Controller {
@@ -19,7 +16,8 @@ export class BoardController extends Controller {
 	    const user = await User.findOneBy({ id: board.userId });
 
 	    if (!user) {
-	        throw new Error("User not found");
+	        this.setStatus(404);
+	        return `No user found with id ${board.userId}`;
 	    }
 
 	    return Board.create({
@@ -36,13 +34,15 @@ export class BoardController extends Controller {
 	    } });
 
 	    if (!board) {
-	        throw new Error("Board not found");
+	        this.setStatus(404);
+	        return `No board found with id ${id}`;
 	    } 
 
 	    const newUsers = await User.find({ where: { id: In(userIds) } });
 
 	    if (!newUsers || newUsers.length !== userIds.length) {
-	        throw new Error("Some users not found");
+	        this.setStatus(404);
+	        return `Some users not found`;
 	    }
 
 	    return Board.merge(board, { users: newUsers }).save();
@@ -56,13 +56,15 @@ export class BoardController extends Controller {
 	    } });
 
 	    if (!board) {
-	        throw new Error("Board not found");
+	        this.setStatus(404);
+	        return `No board found with id ${id}`;
 	    } 
 
 	    const removedUsers = await User.find({ where: { id: In(userIds) } });
 
 	    if (!removedUsers || removedUsers.length !== userIds.length) {
-	        throw new Error("Some users not found");
+	        this.setStatus(404);
+	        return `Some users not found`;
 	    }
 
 	    board.users = board.users.filter(user => !userIds.includes(user.id));
