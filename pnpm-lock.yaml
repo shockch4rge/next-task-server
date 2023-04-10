@@ -40,9 +40,6 @@ dependencies:
   typeorm:
     specifier: ^0.3.12
     version: 0.3.12(pg@8.10.0)(ts-node@10.9.1)
-  uuid:
-    specifier: ^9.0.0
-    version: 9.0.0
   yup:
     specifier: ^1.0.2
     version: 1.0.2
@@ -69,9 +66,6 @@ devDependencies:
   '@types/node':
     specifier: ^18.15.11
     version: 18.15.11
-  '@types/uuid':
-    specifier: ^9.0.1
-    version: 9.0.1
   '@typescript-eslint/eslint-plugin':
     specifier: ^5.57.1
     version: 5.57.1(@typescript-eslint/parser@5.57.1)(eslint@8.37.0)(typescript@5.0.3)
@@ -1079,10 +1073,6 @@ packages:
 
   /@types/stack-utils@2.0.1:
     resolution: {integrity: sha512-Hl219/BT5fLAaz6NDkSuhzasy49dwQS/DSdu4MdggFB8zcXv7vflBI3xp7FEmkmdDkBUI2bPUNeMttp2knYdxw==}
-    dev: true
-
-  /@types/uuid@9.0.1:
-    resolution: {integrity: sha512-rFT3ak0/2trgvp4yYZo5iKFEPsET7vKydKF+VRCxlQ9bpheehyAJH89dAkaLEq/j/RZXJIqcgsmPJKUP1Z28HA==}
     dev: true
 
   /@types/validator@13.7.14:
