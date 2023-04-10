@@ -19,9 +19,10 @@ export class User extends BaseEntity {
     readonly password!: string;
 
     @OneToMany(() => Task, task => task.author)
-    readonly tasks!: Task[];
+    public tasks!: Task[];
 
-    @ManyToMany(() => Board, board => board.users) boards!: Board[];
+    @ManyToMany(() => Board, board => board.users)
+    public boards!: Board[];
 }
 
 export type UserLogin = Pick<User, "email" | "password">;

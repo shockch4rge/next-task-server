@@ -19,10 +19,10 @@ export class Task extends BaseEntity {
 
 
     @ManyToOne(() => User, user => user.tasks) author!: User;
-	@Column() authorId!: User["id"];
+	@Column("uuid") authorId!: User["id"];
 
     @ManyToOne(() => Board, board => board.tasks) board!: Board;
-    @Column() boardId!: Board["id"];
+    @Column("uuid") boardId!: Board["id"];
 
 }
 

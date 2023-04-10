@@ -4,11 +4,17 @@ import { User } from "../user";
 
 @Entity()
 export class Board extends BaseEntity {
-	@PrimaryGeneratedColumn("uuid") id!: string;
-	@Column() title!: string;
-	@Column() description!: string;
+	@PrimaryGeneratedColumn("uuid") 
+    public id!: string;
 
-	@OneToMany(()=> Task, task => task.board) tasks!: Task[];
+	@Column() 
+	public title!: string;
+
+	@Column() 
+	public description!: string;
+
+	@OneToMany(() => Task, task => task.board) 
+	public tasks!: Task[];
 
 	@ManyToMany(() => User, user => user.boards, {
 	    cascade: true,
@@ -17,7 +23,7 @@ export class Board extends BaseEntity {
 }
 
 export type BoardGet = Board["id"];
-export type BoardCreate = Pick<Board, "description" | "title"> & { userId: User["id"] } ;
+export type BoardCreate = Pick<Board, "description" | "title">;
 export type BoardAddUsers = Pick<Board, "id"> & { userIds: Array<User["id"]> };
 export type BoardUpdate = Partial<Pick<Board, "description" | "title">>;
 export type BoardDelete = Board["id"];

@@ -1,9 +1,11 @@
-import { Body, Controller, Delete, Get, Path, Post, Put, Route } from "tsoa";
+import { Body, Controller, Delete, Get, Path, Post, Put, Request, Route, Security } from "tsoa";
 import { In } from "typeorm";
 import { User } from "../user";
 import type { BoardAddUsers } from "./Board";
 import { Board, BoardCreate, BoardDelete, BoardGet, BoardUpdate } from "./Board";
+import { Request as KoaRequest } from "koa";
 
+@Security("jwt")
 @Route("boards")
 export class BoardController extends Controller {
 	@Get(`{id}`)
@@ -12,12 +14,12 @@ export class BoardController extends Controller {
     }
 
 	@Post()
-	public async create(@Body() board: BoardCreate) {
-	    const user = await User.findOneBy({ id: board.userId });
+	public async create(@Body() board: BoardCreate, @Request() req: KoaRequest) {
+	    const user = await User.findOneBy({ id: req.ctx.state.user.id });
 
 	    if (!user) {
 	        this.setStatus(404);
-	        return `No user found with id ${board.userId}`;
+	        return `No user found with id ${req.ctx.state.user.id}`;
 	    }
 
 	    return Board.create({
