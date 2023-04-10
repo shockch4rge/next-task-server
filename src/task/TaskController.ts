@@ -5,9 +5,8 @@ import {
 } from "tsoa";
 import * as yup from "Yup";
 
-import { Task, TaskCreate, TaskDelete, TaskGet } from "./Task";
+import { Task, TaskCreate, TaskDelete, TaskGet, TaskUpdate } from "./Task";
 
-import type { TaskUpdate } from "./Task";
 @Route("/tasks")
 export class TaskController extends Controller {
     @SuccessResponse(200, "OK")
@@ -56,19 +55,33 @@ export class TaskController extends Controller {
         return Task.create({ ...task, status: "open" }).save();
     }
 
+    @Example<TaskUpdate>({
+        title: "Task 2",
+        description: "This is a new task description",
+        status: "complete",
+    })
     @SuccessResponse(200, "OK")
     @Response<yup.ValidationError>(422)
+    @Response<string>(404, "Task not found")
     @Security("jwt")
     @Put(`/{id}`)
-    public async update(@Path() id: TaskUpdate["id"], @Body() body: Omit<TaskUpdate, "id">) {
-        const [validationError, task] = await tri(() => {
+    public async update(@Path() id: Task["id"], @Body() body: TaskUpdate) {
+        const task = await Task.findOneBy({ id });
+
+        if (!task) {
+            this.setStatus(404);
+            return "Task not found";
+        }
+
+        const [validationError, newTaskData] = await tri(() => {
             const schema = yup
-                .object<TaskUpdate>()
+                .object<Omit<TaskUpdate, "id">>()
                 .shape({
                     title: yup.string().optional(),
                     description: yup.string().optional(),
                     status: yup
                         .string<NonNullable<TaskUpdate["status"]>>()
+                        .oneOf(["open", "complete", "pending"])
                         .optional(),
                 });
 
@@ -80,7 +93,7 @@ export class TaskController extends Controller {
             return validationError.message;
         }
 
-        return Task.update(id, task);
+        return Task.merge(task, { ...newTaskData }).save();
     }
 
     @SuccessResponse(200, "OK")
@@ -95,6 +108,6 @@ export class TaskController extends Controller {
             return "Task not found";
         }
 
-        return Task.remove([task]);
+        return task.remove();
     }
 }
