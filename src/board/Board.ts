@@ -1,10 +1,10 @@
-import { BaseEntity, Column, Entity, JoinTable, ManyToMany, OneToMany, PrimaryColumn } from "typeorm";
+import { BaseEntity, Column, Entity, JoinTable, ManyToMany, OneToMany, PrimaryColumn, PrimaryGeneratedColumn } from "typeorm";
 import { Task } from "../task";
 import { User } from "../user";
 
 @Entity()
 export class Board extends BaseEntity {
-	@PrimaryColumn() id!: string;
+	@PrimaryGeneratedColumn("uuid") id!: string;
 	@Column() title!: string;
 	@Column() description!: string;
 
