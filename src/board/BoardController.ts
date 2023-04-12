@@ -4,13 +4,21 @@ import { User } from "../user";
 import type { BoardAddUsers } from "./Board";
 import { Board, BoardCreate, BoardDelete, BoardGet, BoardUpdate } from "./Board";
 import { Request as KoaRequest } from "koa";
+import { db } from "../db";
 
 @Security("jwt")
 @Route("boards")
 export class BoardController extends Controller {
 	@Get()
-    public async getAll() {
-        return Board.find();
+    public async getAll(@Request() req: KoaRequest) {
+        return Board.find({ relations: { 
+            users: true
+        }, where: {
+            users: {
+                id: req.ctx.state.user.id
+            }
+        }
+        });
     }
 
 
