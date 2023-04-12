@@ -1,6 +1,7 @@
 import { BaseEntity, Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
-import { Task } from "../task";
+
 import { Board } from "../board";
+import { Task } from "../task";
 
 @Entity()
 export class Folder extends BaseEntity {
