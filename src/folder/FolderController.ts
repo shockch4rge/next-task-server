@@ -1,10 +1,11 @@
 import { Request as KoaRequest } from "koa";
 import { tri } from "try-v2";
-import { Body, Controller, Delete, Get, Path, Post, Put, Request, Route, Security } from "tsoa";
+import { Body, Controller, Delete, Example, Get, Path, Post, Put, Request, Response, Route, Security } from "tsoa";
 import * as yup from "yup";
 
 import { User } from "../user";
 import { Folder, FolderCreate, FolderGet, FolderUpdate } from "./Folder";
+import { Board } from "../board";
 
 @Security("jwt")
 @Route("/folders")
@@ -21,6 +22,12 @@ export class FolderController extends Controller {
         return folder;
     }
 
+    @Example<FolderCreate>({
+        title: "Folder title",
+        description: "Folder description",
+    })
+    @Response<yup.ValidationError>(400)
+    @Response<string>(404, "Folder not found")
     @Post()
     public async create(@Body() body: FolderCreate, @Request() req: KoaRequest) {
         const [validationError, folder] = await tri(() => {
@@ -45,9 +52,7 @@ export class FolderController extends Controller {
         }
 
         return Folder.create({
-            title: folder.title,
-            description: folder.description,
-            boardId: folder.boardId,
+            ...folder,
             tasks: [],
         }).save();
     }
@@ -77,7 +82,7 @@ export class FolderController extends Controller {
 
         if (!folder) {
             this.setStatus(404);
-            return `No board found with id ${id}`;
+            return `No folder found with id ${id}`;
         }
 
         return folder.remove();
