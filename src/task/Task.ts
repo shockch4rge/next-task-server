@@ -47,3 +47,7 @@ export type TaskCreate = Pick<Task, "description" | "title"> & {
 };
 export type TaskUpdate = Partial<Pick<Task, "description" | "status" | "title">>;
 export type TaskDelete = Task["id"];
+export type TaskMove = {
+    index: number;
+    folderId: Folder["id"];
+};
