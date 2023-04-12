@@ -1,6 +1,7 @@
+import { Request as KoaRequest } from "koa";
 import { tri } from "try-v2";
 import {
-    Body, Controller, Delete, Example, Get, Path, Post, Put, Response, Route, Security,
+    Body, Controller, Delete, Example, Get, Path, Post, Put, Request, Response, Route, Security,
     SuccessResponse
 } from "tsoa";
 import * as yup from "Yup";
@@ -27,20 +28,18 @@ export class TaskController extends Controller {
     @Example<TaskCreate>({
         title: "Task 1",
         description: "This is a task description",
-        authorId: "user1",
         boardId: "board1",
     })
     @SuccessResponse(200, "OK")
     @Response<yup.ValidationError>(422)
     @Security("jwt")
     @Post()
-    public async create(@Body() body: TaskCreate) {
+    public async create(@Body() body: TaskCreate, @Request() req: KoaRequest) {
         const [validationError, task] = await tri(() => {
             const schema = yup.object()
                 .shape({
                     title: yup.string().required(),
                     description: yup.string().required(),
-                    authorId: yup.string().required(),
                     boardId: yup.string().required(),
                 });
 
@@ -52,7 +51,11 @@ export class TaskController extends Controller {
             return validationError.message;
         }
 
-        return Task.create({ ...task, status: "open" }).save();
+        return Task.create({
+            ...task,
+            authorId: req.ctx.state.user.id,
+            status: "open"
+        }).save();
     }
 
     @Example<TaskUpdate>({
