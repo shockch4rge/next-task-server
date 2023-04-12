@@ -8,10 +8,16 @@ import { Request as KoaRequest } from "koa";
 @Security("jwt")
 @Route("boards")
 export class BoardController extends Controller {
-	@Get(`{id}`)
-    public async get(@Path() id: BoardGet) {
-        return Board.findOneBy({ id });
+	@Get()
+    public async getAll() {
+        return Board.find();
     }
+
+
+	@Get(`{id}`)
+	public async get(@Path() id: BoardGet) {
+	    return Board.findOneBy({ id });
+	}
 
 	@Post()
 	public async create(@Body() board: BoardCreate, @Request() req: KoaRequest) {
