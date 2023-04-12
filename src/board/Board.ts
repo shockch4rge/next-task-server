@@ -14,6 +14,9 @@ export class Board extends BaseEntity {
 	@Column()
 	public description!: string;
 
+	@OneToMany(() => Folder, folder => folder.board)
+	public folders!: Folder[];
+
 	@OneToMany(() => Task, task => task.board)
 	public tasks!: Task[];
 
