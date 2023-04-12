@@ -162,9 +162,7 @@ export class TaskController extends Controller {
             return "Task not found";
         }
 
-        const folderLength = await Task.count({
-            where: { folderId },
-        });
+        const folderLength = await Task.countBy({ folderId });
 
         const { index: newIndex, folderId: newFolderId } = taskData;
 
