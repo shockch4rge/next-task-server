@@ -3,7 +3,6 @@ import { tri } from "try-v2";
 import { Body, Controller, Delete, Get, Path, Post, Put, Request, Route, Security } from "tsoa";
 import * as yup from "yup";
 
-import { Board } from "../board";
 import { User } from "../user";
 import { Folder, FolderCreate, FolderGet, FolderUpdate } from "./Folder";
 
@@ -12,14 +11,14 @@ import { Folder, FolderCreate, FolderGet, FolderUpdate } from "./Folder";
 export class FolderController extends Controller {
     @Get(`{id}`)
     public async get(@Path() id: FolderGet) {
-        const board = Board.findOneBy({ id });
+        const folder = Folder.findOneBy({ id });
 
-        if (!board) {
+        if (!folder) {
             this.setStatus(404);
-            return `No board found with id ${id}`;
+            return `No folder found with id ${id}`;
         }
 
-        return board;
+        return folder;
     }
 
     @Post()
@@ -71,7 +70,7 @@ export class FolderController extends Controller {
 
         return Folder.save({ id, ...folder });
     }
- 
+
     @Delete(`/{id}`)
     public async delete(@Path() id: string) {
         const folder = await Folder.findOneBy({ id });
