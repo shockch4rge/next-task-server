@@ -7,12 +7,13 @@ import {
 import * as yup from "Yup";
 
 import { Task, TaskCreate, TaskDelete, TaskGet, TaskUpdate } from "./Task";
+import { Folder } from "../folder";
 
+@Security("jwt")
 @Route("/tasks")
 export class TaskController extends Controller {
     @SuccessResponse(200, "OK")
     @Response<string>(404, "Task not found")
-    @Security("jwt")
     @Get(`/{id}`)
     public async get(@Path() id: TaskGet) {
         const task = await Task.findOneBy({ id });
@@ -29,18 +30,20 @@ export class TaskController extends Controller {
         title: "Task 1",
         description: "This is a task description",
         boardId: "board1",
+        folderId: "folder1",
     })
     @SuccessResponse(200, "OK")
     @Response<yup.ValidationError>(422)
-    @Security("jwt")
-    @Post()
-    public async create(@Body() body: TaskCreate, @Request() req: KoaRequest) {
-        const [validationError, task] = await tri(() => {
-            const schema = yup.object()
+    @Response<string>(404, "Folder not found")
+    @Post(`/folder/{folderId}`)
+    public async create(@Path() folderId: string, @Body() body: TaskCreate, @Request() req: KoaRequest) {
+        const [validationError, taskData] = await tri(() => {
+            const schema = yup.object<TaskCreate>()
                 .shape({
                     title: yup.string().required(),
                     description: yup.string().required(),
                     boardId: yup.string().required(),
+                    folderId: yup.string().required(),
                 });
 
             return schema.validate(body);
@@ -51,11 +54,25 @@ export class TaskController extends Controller {
             return validationError.message;
         }
 
-        return Task.create({
-            ...task,
+        const folder = await Folder.findOneBy({ id: folderId });
+
+        if (!folder) {
+            this.setStatus(404);
+            return "Folder not found";
+        }
+
+        const folderIndex = await Task.count({
+            where: { folderId }
+        });
+
+        const task = await Task.create({
+            ...taskData,
+            folderIndex,
+            status: "open",
             authorId: req.ctx.state.user.id,
-            status: "open"
         }).save();
+
+        await Folder.merge(folder, { tasks: [...folder.tasks, task] }).save();
     }
 
     @Example<TaskUpdate>({
@@ -66,7 +83,6 @@ export class TaskController extends Controller {
     @SuccessResponse(200, "OK")
     @Response<yup.ValidationError>(422)
     @Response<string>(404, "Task not found")
-    @Security("jwt")
     @Put(`/{id}`)
     public async update(@Path() id: Task["id"], @Body() body: TaskUpdate) {
         const task = await Task.findOneBy({ id });
@@ -78,7 +94,7 @@ export class TaskController extends Controller {
 
         const [validationError, newTaskData] = await tri(() => {
             const schema = yup
-                .object<Omit<TaskUpdate, "id">>()
+                .object<TaskUpdate>()
                 .shape({
                     title: yup.string().optional(),
                     description: yup.string().optional(),
@@ -101,7 +117,6 @@ export class TaskController extends Controller {
 
     @SuccessResponse(200, "OK")
     @Response<string>(400, "Task not found")
-    @Security("jwt")
     @Delete(`/{id}`)
     public async delete(@Path() id: TaskDelete) {
         const task = await Task.findOneBy({ id });
@@ -113,4 +128,6 @@ export class TaskController extends Controller {
 
         return task.remove();
     }
+
+    
 }
