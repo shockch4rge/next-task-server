@@ -22,8 +22,14 @@ export class Folder extends BaseEntity {
 
     @Column("uuid")
     public boardId!: Board["id"];
+
+    @Column()
+    public boardIndex!: number;
 }
 
 export type FolderGet = Folder["id"];
 export type FolderCreate = Pick<Folder, "description" | "title"> & { boardId: Board["id"] };
 export type FolderUpdate = Partial<Pick<Folder, "description" | "title">>;
+export type FolderMove = {
+    index: number;
+};
