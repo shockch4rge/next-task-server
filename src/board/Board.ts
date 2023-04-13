@@ -1,23 +1,27 @@
 import { BaseEntity, Column, Entity, JoinTable, ManyToMany, OneToMany, PrimaryColumn, PrimaryGeneratedColumn } from "typeorm";
 import { Task } from "../task";
 import { User } from "../user";
+import { Folder } from "../folder/Folder";
 
 @Entity()
 export class Board extends BaseEntity {
-	@PrimaryGeneratedColumn("uuid") 
-    public id!: string;
+	@PrimaryGeneratedColumn("uuid")
+	public id!: string;
 
-	@Column() 
+	@Column()
 	public title!: string;
 
-	@Column() 
+	@Column()
 	public description!: string;
 
-	@OneToMany(() => Task, task => task.board) 
+	@OneToMany(() => Folder, folder => folder.board)
+	public folders!: Folder[];
+
+	@OneToMany(() => Task, task => task.board)
 	public tasks!: Task[];
 
 	@ManyToMany(() => User, user => user.boards, {
-	    cascade: true,
+		cascade: true,
 	})
 	@JoinTable({ name: "board_users" }) users!: User[];
 }
