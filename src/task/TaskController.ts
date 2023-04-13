@@ -73,7 +73,7 @@ export class TaskController extends Controller {
             authorId: req.ctx.state.user.id,
         }).save();
 
-        await Folder.merge(folder, { tasks: [...folder.tasks, task] }).save();
+        await Folder.merge(folder, { tasks: [task] }).save();
     }
 
     @Example<TaskUpdate>({
@@ -197,16 +197,9 @@ export class TaskController extends Controller {
 
     @Get(`/folder/{folderId}`)
     public async folderTasks(@Path() folderId: string) {
-        const tasks = await Task.find({
+        return Task.find({
             where: { folderId },
             order: { folderIndex: "asc" },
         });
-
-        if (!tasks) {
-            this.setStatus(404);
-            return "Folder not found";
-        }
-
-        return tasks;
     }
 }
