@@ -120,17 +120,10 @@ export class FolderController extends Controller {
     @Response<string>(404, "No folders found for board <id>")
     @Get(`/board/{boardId}`)
     public async boardFolders(@Path() boardId: Board["id"]) {
-        const folders = Folder.find({
+        return Folder.find({
             where: { boardId },
             order: { boardIndex: "asc" }
         });
-
-        if (!folders) {
-            this.setStatus(404);
-            return `No folders found for board ${boardId}`;
-        }
-
-        return folders;
     }
 
     @Example<FolderMove>({
