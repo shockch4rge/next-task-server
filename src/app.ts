@@ -7,6 +7,7 @@ import KoaRouter from "@koa/router";
 
 import { RegisterRoutes } from "./routing/routes";
 import { db } from "./db";
+import cors from "@koa/cors";
 
 db.initialize()
     .then(() => {
@@ -14,10 +15,15 @@ db.initialize()
         const router = new KoaRouter();
 
         app.use(bodyParser());
+		
+        app.use(cors({
+            origin: "*",
+        }));
 
         RegisterRoutes(router);
         app.use(router.routes());
         app.use(router.allowedMethods());
+
 
         app.use(async (ctx, next) => {
             ctx.status = 404;

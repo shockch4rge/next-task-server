@@ -12,6 +12,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@koa/cors": "^4.0.0",
     "@koa/router": "^12.0.0",
     "@tsoa/runtime": "^5.0.0",
     "argon2": "^0.30.3",
@@ -33,6 +34,7 @@
     "@types/jsonwebtoken": "^9.0.1",
     "@types/koa": "^2.13.6",
     "@types/koa-bodyparser": "^4.3.10",
+    "@types/koa__cors": "^4.0.0",
     "@types/koa__router": "^12.0.0",
     "@types/node": "^18.15.11",
     "@typescript-eslint/eslint-plugin": "^5.57.1",
