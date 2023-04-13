@@ -4,11 +4,11 @@ import {
     Body, Controller, Delete, Example, Get, Path, Post, Put, Request, Response, Route, Security,
     SuccessResponse
 } from "tsoa";
+import { MoreThan, MoreThanOrEqual } from "typeorm";
 import * as yup from "Yup";
 
-import { Task, TaskCreate, TaskDelete, TaskGet, TaskMove, TaskUpdate } from "./Task";
 import { Folder } from "../folder";
-import { MoreThanOrEqual } from "typeorm";
+import { Task, TaskCreate, TaskDelete, TaskGet, TaskMove, TaskUpdate } from "./Task";
 
 @Security("jwt")
 @Route("/tasks")
@@ -118,16 +118,37 @@ export class TaskController extends Controller {
 
     @SuccessResponse(200, "OK")
     @Response<string>(404, "Task not found")
-    @Delete(`/{id}`)
-    public async delete(@Path() id: TaskDelete) {
-        const task = await Task.findOneBy({ id });
+    @Delete(`/folder/{folderId}/{taskId}`)
+    public async delete(@Path() folderId: Folder["id"], @Path() taskId: TaskDelete) {
+        const task = await Task.findOneBy({ id: taskId });
 
         if (!task) {
             this.setStatus(404);
             return "Task not found";
         }
 
-        return task.remove();
+        const count = await Task.countBy({ folderId });
+
+        await task.remove();
+
+        if (task.folderIndex === 0) {
+            await Task
+                .getRepository()
+                .decrement(
+                    { folderId },
+                    "folderIndex",
+                    1,
+                );
+        }
+        else if (task.folderIndex > 0 && task.folderIndex < count) {
+            await Task
+                .getRepository()
+                .decrement(
+                    { folderId, folderIndex: MoreThan(task.folderIndex) },
+                    "folderIndex",
+                    1,
+                );
+        }
     }
 
     @Example<TaskMove>({
