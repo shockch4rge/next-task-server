@@ -4,11 +4,11 @@ import {
     Body, Controller, Delete, Example, Get, Path, Post, Put, Request, Response, Route, Security,
     SuccessResponse
 } from "tsoa";
+import { MoreThan, MoreThanOrEqual } from "typeorm";
 import * as yup from "Yup";
 
-import { Task, TaskCreate, TaskDelete, TaskGet, TaskMove, TaskUpdate } from "./Task";
 import { Folder } from "../folder";
-import { MoreThanOrEqual } from "typeorm";
+import { Task, TaskCreate, TaskDelete, TaskGet, TaskMove, TaskUpdate } from "./Task";
 
 @Security("jwt")
 @Route("/tasks")
@@ -118,16 +118,110 @@ export class TaskController extends Controller {
 
     @SuccessResponse(200, "OK")
     @Response<string>(404, "Task not found")
-    @Delete(`/{id}`)
-    public async delete(@Path() id: TaskDelete) {
-        const task = await Task.findOneBy({ id });
+    @Delete(`/folder/{folderId}/{taskId}`)
+    public async delete(@Path() folderId: Folder["id"], @Path() taskId: TaskDelete) {
+        const task = await Task.findOneBy({ id: taskId });
 
         if (!task) {
             this.setStatus(404);
             return "Task not found";
         }
 
-        return task.remove();
+        const count = await Task.countBy({ folderId });
+
+        await task.remove();
+
+        if (task.folderIndex === 0) {
+            await Task
+                .getRepository()
+                .decrement(
+                    { folderId },
+                    "folderIndex",
+                    1,
+                );
+        }
+        else if (task.folderIndex > 0 && task.folderIndex < count) {
+            await Task
+                .getRepository()
+                .decrement(
+                    { folderId, folderIndex: MoreThan(task.folderIndex) },
+                    "folderIndex",
+                    1,
+                );
+        }
+    }
+
+    @Example<TaskMove>({
+        index: 0,
+        folderId: "folder2",
+    })
+    @SuccessResponse(200, "OK")
+    @Response<string>(404, "Task not found")
+    @Response<yup.ValidationError>(422)
+    @Put(`/folder/{folderId}/move/{taskId}`)
+    public async move(@Path() folderId: string, @Path() taskId: string, @Body() body: TaskMove) {
+        const [validationError, taskData] = await tri(() => {
+            const schema = yup
+                .object<TaskMove>()
+                .shape({
+                    index: yup.number().required(),
+                    folderId: yup.string().required(),
+                });
+
+            return schema.validate(body);
+        });
+
+        if (validationError) {
+            this.setStatus(422);
+            return validationError;
+        }
+
+        const task = await Task.findOneBy({ id: taskId });
+
+        if (!task) {
+            this.setStatus(404);
+            return "Task not found";
+        }
+
+        const folderLength = await Task.countBy({ folderId });
+
+        const { index: newIndex, folderId: newFolderId } = taskData;
+
+        // if folder has no items, reset task index to 0
+        if (folderLength <= 0) {
+            task.folderIndex = 0;
+        }
+        // if task is first in the list (top), increment all tasks' indexes after it
+        else if (newIndex === 0) {
+            task.folderIndex = 0;
+            await Task.getRepository().increment({ folderId }, "folderIndex", 1);
+        }
+        // if new index is larger than new folder's length, cap the index to the length
+        else if (newIndex > folderLength) {
+            task.folderIndex = folderLength;
+        }
+        // if task is placed in the middle of the folder, increment all other tasks' indexes after the card's index
+        else if (newIndex > 0 && newIndex < folderLength) {
+            await Task.getRepository().increment(
+                { folderId, folderIndex: MoreThanOrEqual(newIndex), },
+                "folderIndex",
+                1
+            );
+            // then save the index
+            task.folderIndex = newIndex;
+        }
+
+        task.folderId = newFolderId;
+
+        return task.save();
+    }
+
+    @Get(`/folder/{folderId}`)
+    public async folderTasks(@Path() folderId: string) {
+        return Task.find({
+            where: { folderId },
+            order: { folderIndex: "asc" },
+        });
     }
 
     @Example<TaskMove>({
